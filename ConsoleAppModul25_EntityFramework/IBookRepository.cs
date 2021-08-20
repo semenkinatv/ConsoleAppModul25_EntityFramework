@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ConsoleAppModul25_EntityFramework
+namespace ConsoleAppModul25_EntityFramework 
 {
     interface IBookRepository : IDisposable    
     {
