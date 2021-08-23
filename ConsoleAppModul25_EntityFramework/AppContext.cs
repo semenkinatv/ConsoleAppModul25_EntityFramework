@@ -7,8 +7,8 @@ namespace ConsoleAppModul25_EntityFramework
         public DbSet<User> Users { get; set; }
         public DbSet<Book> Books { get; set; }
 
-        //// Объекты таблицы Companies
-        //public DbSet<Company> Companies { get; set; }
+        public DbSet<Style> Styles { get; set; }
+        public DbSet<Autor> Autors { get; set; }
 
         public AppContext()
         {

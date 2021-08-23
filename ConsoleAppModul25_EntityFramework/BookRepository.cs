@@ -47,31 +47,46 @@ namespace ConsoleAppModul25_EntityFramework
             db.SaveChanges();
         }
 
-        //Получать список книг определенного жанра и вышедших между определенными годами.
-        public IEnumerable<Book> GetListParm(string styles, int yearS, int yearE)
+        // Получать список книг определенного жанра и вышедших между определенными годами.
+        public IEnumerable<Book> ListBooksStyle(string style, int yearS, int yearE)
         {
-            var list = db.Books.Where(b => b.Styles == styles)
-                .Where(b => b.Year >= yearS & b.Year <= yearE).ToList();
-            return list;
+            var list1 = db.Books.Where(b => b.Year >= yearS && b.Year <= yearE)
+                .Join(db.Styles, b => b.StyleId, s => s.Id, (b, s) =>
+           new { NameBook = b.Name, YearBook = b.Year,StyleName = s.Name })
+                .Where(l => l.StyleName.Contains(style)).ToList();
+
+            var list2 = list1.Select(row => new Book {Name = row.NameBook, Year = row.YearBook});
+
+            return (IEnumerable<Book>)list2;
         }
 
         //Получать количество книг определенного автора в библиотеке.
-        public int CountBookAutor(string autor)
+        public int CountBooksAutor(string autor)
         {
-            return db.Books.Count(b => b.Autor == autor);
+            //return db.Books.Count(b => b.Autor == autor);
+            var rez = db.Books.Join(db.Autors, b => b.AutorId, a => a.Id, (b, a) =>
+           new { AutorBook = a.Name })
+                .Count(l => l.AutorBook == autor);
+            return rez;
         }
 
         // Получать количество книг определенного жанра в библиотеке.
-        public int CountBookStyles(string styles)
+        public int CountBooksStyle(string style)
         {
-           // return db.Books.Count(b => b.Styles == styles);
-            return db.Books.Count(b => b.Styles.Contains(styles));
+             var rez = db.Books.Join(db.Styles, b => b.StyleId, s => s.Id, (b, s) =>
+           new { NameBook = b.Name, StyleName = s.Name })
+                .Count(l => l.StyleName.Contains(style));
+            return rez;
         }
 
         //Получать булевый флаг о том, есть ли книга определенного автора и с определенным названием в библиотеке.
         public bool ExistsBookAutorName(string autor, string name)
         {
-            return db.Books.Any(b => b.Autor == autor & b.Name == name);
+           var rez = db.Books.Join(db.Autors, b => b.AutorId, a => a.Id, (b, a) =>
+          new { AutorBook = a.Name, NameBook = b.Name })
+               .Any(l => l.AutorBook == autor && l.NameBook == name);
+
+            return rez;
         }
 
         //Получать булевый флаг о том, есть ли определенная книга на руках у пользователя.
@@ -84,9 +99,13 @@ namespace ConsoleAppModul25_EntityFramework
         }
 
         //Получать количество книг на руках у пользователя.
-        public int CountBookUser(int iduser)
+        public int CountBookUser(string nameUser)
         {
-            return db.Books.Count(b => b.Id == iduser);
+            //return db.Books.Count(b => b.UserId == iduser);
+            var rez = db.Books.Join(db.Users, b => b.UserId, u => u.Id, (b, u) =>
+                new { NameUser = u.Name})
+              .Count(l => l.NameUser == nameUser);
+            return rez;
         }
 
         //Получение последней вышедшей книги.

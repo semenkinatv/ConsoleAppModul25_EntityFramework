@@ -11,12 +11,12 @@ namespace ConsoleAppModul25_EntityFramework
         void Update(int id, int year); // обновление объекта
         void Delete(int id); // удаление объекта по id
         void Save();  // сохранение изменений
-        IEnumerable<Book> GetListParm(string styles, int yearS, int yearE);
-        int CountBookAutor(string autor);
-        int CountBookStyles(string styles);
+        IEnumerable<Book> ListBooksStyle(string style, int yearS, int yearE);
+        int CountBooksAutor(string autor);
+        int CountBooksStyle(string style);
         bool ExistsBookAutorName(string autor, string name);
         bool UserHasBook(string nameBook, string nameUser);
-        int CountBookUser(int iduser);
+        int CountBookUser(string nameUser);
         IEnumerable<Book> BookLast();
         IEnumerable<Book> ListBooksOrderName();
         IEnumerable<Book> ListBooksOrderYear(); 
